@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ShoppingCartOutlined, ShoppingOutlined } from "@ant-design/icons";
 
 const { Content, Footer, Sider } = Layout;
-function LayoutWeb({ children, title, keys }) {
+function LayoutWeb({ children, keys }) {
   const year = new Date().getFullYear();
 
   const itemsMenu = [

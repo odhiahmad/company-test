@@ -1,18 +1,14 @@
-import "../styles/globals.css";
 import { wrapper } from "./../store";
-import { useStore, Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import { CookiesProvider } from "react-cookie";
-import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import { Provider } from "react-redux";
 
-function MyApp({ Component, pageProps }) {
-  const store = useStore();
+function MyApp({ Component, ...rest }) {
+  const { store, props } = wrapper.useWrappedStore(rest);
+  const { pageProps } = props;
   return (
     <>
-      <CookiesProvider>
+      <Provider store={store}>
         <Component {...pageProps} />
-      </CookiesProvider>
+      </Provider>
     </>
   );
 }

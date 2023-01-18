@@ -8,7 +8,7 @@ import {
   GET_CART_ERROR,
 } from "../../actions/cart";
 
-function* getCart(action) {
+function* getCart() {
   try {
     yield put({
       type: GET_CART_PROCESS,

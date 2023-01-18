@@ -1,28 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import LayoutWeb from "./../components/layout/BaseLayout";
-import {
-  Space,
-  Button,
-  Row,
-  Col,
-  Table,
-  Divider,
-  Input,
-  Select,
-  DatePicker,
-  Layout,
-  Pagination,
-} from "antd";
+import { Space, Row, Col, Table, Divider, Input, Layout } from "antd";
 import { getProduct } from "./../store/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { PlusCircleOutlined, FolderOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 
 const { Search } = Input;
 const { Content } = Layout;
 export default function Product() {
   const dispatch = useDispatch();
-
   const getProductResult = useSelector((state) => state.getProduct.result);
   const getProductLoading = useSelector((state) => state.getProduct.loading);
   const getProductError = useSelector((state) => state.getProduct.error);
@@ -43,14 +29,11 @@ export default function Product() {
   }, [dispatch, getProductError]);
 
   const onSearch = (value) => {
-    console.log(value);
     const data = {
       search: value,
     };
     dispatch(getProduct(data));
   };
-
-  const handleTableChange = () => {};
 
   const columnTable = [
     {
@@ -87,12 +70,10 @@ export default function Product() {
   return (
     <LayoutWeb className="layout-page" keys={"product"}>
       <Content>
-        <div className="custom-divider">
-          <Divider orientation="left">Product</Divider>
-        </div>
+        <Divider orientation="left">Product</Divider>
         <Space direction="vertical" size="middle" style={{ display: "flex" }}>
           <Row>
-            <Col flex={4}>2 / 5</Col>
+            <Col flex={4}></Col>
             <Col flex={1}>
               <Search
                 style={{ width: "100%" }}
@@ -110,8 +91,6 @@ export default function Product() {
         rowKey={(record) => record.id}
         dataSource={getProductResult === null ? [] : getProductResult.products}
         columns={columnTable}
-        //   pagination={{ pageSize: this.state.count }}
-        //   onChange={this.handleTableChange}
         scroll={{
           x: 1600,
           y: 1200,
