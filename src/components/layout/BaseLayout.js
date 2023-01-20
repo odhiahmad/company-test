@@ -22,7 +22,7 @@ function LayoutWeb({ children, keys }) {
 
   return (
     <Layout>
-      <Sider>
+      <Sider breakpoint="lg" collapsedWidth="0">
         <Menu
           defaultSelectedKeys={"product"}
           defaultOpenKeys={["product"]}

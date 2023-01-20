@@ -7,6 +7,7 @@ import {
 
 const initState = {
   result: null,
+  filter: [],
   loading: false,
   error: null,
 };
@@ -23,7 +24,8 @@ export function getProduct(state = initState, action) {
     case GET_PRODUCT_SUCCESS:
       return {
         ...state,
-        result: action.result,
+        result: action.result.data,
+        filter: action.result.filter,
         loading: false,
         error: null,
       };

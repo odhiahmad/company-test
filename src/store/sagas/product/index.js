@@ -23,12 +23,39 @@ function* getProduct(action) {
         timeout: API_TIMEOUT,
       }
     );
+
+    let brand = [];
+    let product = [];
+    let category = [];
+    let price = [];
+
+    const productData = result.products;
+    for (let i = 0; i < productData.length; i++) {
+      brand.push(productData[i].brand);
+      product.push(productData[i].title);
+      category.push(productData[i].category);
+      price.push(productData[i].price);
+    }
+
+    let uniqueBrand = [...new Set(brand)];
+    let uniqueProduct = [...new Set(product)];
+    let uniqueCategory = [...new Set(category)];
+    const maxValue = Math.max(...price);
+    const minValue = Math.min(...price);
     yield put({
       type: GET_PRODUCT_SUCCESS,
-      result: result,
+      result: {
+        data: result,
+        filter: {
+          brand: uniqueBrand,
+          product: uniqueProduct,
+          category: uniqueCategory,
+          priceMax: maxValue,
+          priceMin: minValue,
+        },
+      },
     });
   } catch (error) {
-    console.log(error);
     yield put({
       type: GET_PRODUCT_ERROR,
       error: error,

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import LayoutWeb from "./../components/layout/BaseLayout";
 import ModalView from "./../components/cart/ModalView";
-import { Space, Button, Row, Table, Divider } from "antd";
+import { Table, Divider } from "antd";
 import { getCart } from "./../store/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { FolderOutlined } from "@ant-design/icons";
+import { columnTableCart } from "./../utils/tableHeader";
 import Swal from "sweetalert2";
 
 export default function Cart() {
@@ -41,58 +41,6 @@ export default function Cart() {
     setModalView(false);
   };
 
-  const columnTable = [
-    {
-      title: "User Id",
-      dataIndex: "userId",
-      key: "userId",
-      width: 60,
-    },
-    {
-      title: "Total Products",
-      dataIndex: "totalProducts",
-      key: "totalProducts",
-      width: 60,
-    },
-    {
-      title: "Total Quantity",
-      dataIndex: "totalQuantity",
-      key: "totalQuantity",
-      width: 60,
-    },
-    {
-      title: "Discount Total",
-      dataIndex: "discountedTotal",
-      key: "discountedTotal",
-      width: 60,
-    },
-    {
-      title: "Total",
-      dataIndex: "total",
-      key: "total",
-      width: 60,
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      key: "action",
-      width: 160,
-      render: (text, record) => (
-        <Row>
-          <Space size="small" align="center">
-            <Button
-              className="btn-primary"
-              type="primary"
-              onClick={() => openModalView(record)}
-              icon={<FolderOutlined />}
-            >
-              View
-            </Button>
-          </Space>
-        </Row>
-      ),
-    },
-  ];
   return (
     <LayoutWeb className="layout-page" keys={"cart"}>
       <Divider orientation="left">Cart</Divider>
@@ -100,7 +48,7 @@ export default function Cart() {
         loading={getCartLoading}
         rowKey={(record) => record.id}
         dataSource={getCartResult === null ? [] : getCartResult.carts}
-        columns={columnTable}
+        columns={columnTableCart(openModalView)}
       />
       <ModalView
         visible={modalView}
