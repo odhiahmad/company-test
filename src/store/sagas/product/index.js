@@ -25,33 +25,39 @@ function* getProduct(action) {
     );
 
     let brand = [];
-    let product = [];
     let category = [];
     let price = [];
 
     const productData = result.products;
     for (let i = 0; i < productData.length; i++) {
-      brand.push(productData[i].brand);
-      product.push(productData[i].title);
-      category.push(productData[i].category);
+      brand.push({
+        key: i,
+        value: productData[i].brand,
+        label: productData[i].brand,
+      });
+
+      category.push({
+        key: i,
+        value: productData[i].category,
+        label: productData[i].category,
+      });
       price.push(productData[i].price);
     }
 
-    let uniqueBrand = [...new Set(brand)];
-    let uniqueProduct = [...new Set(product)];
-    let uniqueCategory = [...new Set(category)];
+    const uniqueBrand = [...new Map(brand.map((m) => [m.value, m])).values()];
+    const uniqueCategory = [
+      ...new Map(category.map((m) => [m.value, m])).values(),
+    ];
     const maxValue = Math.max(...price);
-    const minValue = Math.min(...price);
+
     yield put({
       type: GET_PRODUCT_SUCCESS,
       result: {
         data: result,
         filter: {
           brand: uniqueBrand,
-          product: uniqueProduct,
           category: uniqueCategory,
           priceMax: maxValue,
-          priceMin: minValue,
         },
       },
     });

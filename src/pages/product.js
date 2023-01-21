@@ -10,6 +10,7 @@ import {
   Layout,
   InputNumber,
   Slider,
+  Button,
 } from "antd";
 import { getProduct } from "./../store/actions";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,20 +27,17 @@ export default function Product() {
   const getProductError = useSelector((state) => state.getProduct.error);
 
   const [filterTable, setFilterTable] = useState([]);
-  const [selectedItemsBrand, setSelectedItemsBrand] = useState([]);
-  const [selectedItemsProduct, setSelectedItemsProduct] = useState([]);
-  const [selectedItemsCategory, setSelectedItemsCategory] = useState([]);
+  const [selectedItemsBrand, setSelectedItemsBrand] = useState(null);
+  const [selectedItemsCategory, setSelectedItemsCategory] = useState(null);
   const [inputValue, setInputValue] = useState(0);
-
-  const onChange = (newValue) => {
-    setInputValue(newValue);
-  };
+  const [activeButtonClear, setActiveButtonClear] = useState(false);
 
   useEffect(() => {
     const data = {
       search: "",
     };
     dispatch(getProduct(data));
+    setFilterTable([]);
     if (getProductError && getProductError !== null) {
       Swal.fire({
         title: "Gagal",
@@ -57,6 +55,45 @@ export default function Product() {
     dispatch(getProduct(data));
   };
 
+  const changeFilterBrand = (value) => {
+    const productData = getProductResult.products;
+    const filterTableBrand = productData.filter((o) =>
+      String(o["brand"]).toLowerCase().includes(value.toLowerCase())
+    );
+
+    setFilterTable(filterTableBrand);
+    setActiveButtonClear(true);
+    setSelectedItemsBrand(value);
+  };
+
+  const changeFilterCategory = (value) => {
+    const productData = getProductResult.products;
+    const filterTableCategory = productData.filter((o) =>
+      String(o["category"]).toLowerCase().includes(value.toLowerCase())
+    );
+
+    setFilterTable(filterTableCategory);
+    setActiveButtonClear(true);
+    setSelectedItemsCategory(value);
+  };
+
+  const changeFilterPrice = (value) => {
+    const productData = getProductResult.products;
+    const filterTablePrice = productData.filter(
+      (o) => String(o["price"]) >= value
+    );
+
+    setFilterTable(filterTablePrice);
+    setActiveButtonClear(true);
+    setInputValue(value);
+  };
+
+  const clearFilter = () => {
+    setFilterTable([]);
+    setSelectedItemsBrand(null);
+    setSelectedItemsCategory(null);
+    setActiveButtonClear(false);
+  };
   return (
     <LayoutWeb className="layout-page" keys={"product"}>
       <Content>
@@ -78,6 +115,15 @@ export default function Product() {
           </Divider>
           <Row gutter={[8, 16]}>
             <Col flex={1}>
+              <Button
+                disabled={!activeButtonClear}
+                type="primary"
+                onClick={clearFilter}
+              >
+                Clear Filter
+              </Button>
+            </Col>
+            <Col flex={1}>
               <Row>
                 <Col span={12}>
                   <Slider
@@ -87,7 +133,7 @@ export default function Product() {
                         ? []
                         : getProductFilter.priceMax
                     }
-                    onChange={onChange}
+                    onChange={changeFilterPrice}
                     value={typeof inputValue === "number" ? inputValue : 0}
                   />
                 </Col>
@@ -104,7 +150,7 @@ export default function Product() {
                       width: "100%",
                     }}
                     value={inputValue}
-                    onChange={onChange}
+                    onChange={changeFilterPrice}
                   />
                 </Col>
               </Row>
@@ -112,14 +158,9 @@ export default function Product() {
             </Col>
             <Col flex={1}>
               <SelectItem
-                disabled={
-                  selectedItemsCategory.length !== 0 ||
-                  selectedItemsProduct.length !== 0
-                    ? true
-                    : false
-                }
+                disabled={selectedItemsCategory !== null ? true : false}
                 value={selectedItemsBrand}
-                onChange={setSelectedItemsBrand}
+                onChange={changeFilterBrand}
                 title={"Brand"}
                 data={
                   getProductFilter.length === 0 ? [] : getProductFilter.brand
@@ -128,30 +169,9 @@ export default function Product() {
             </Col>
             <Col flex={1}>
               <SelectItem
-                disabled={
-                  selectedItemsBrand.length !== 0 ||
-                  selectedItemsCategory.length !== 0
-                    ? true
-                    : false
-                }
-                value={selectedItemsProduct}
-                onChange={setSelectedItemsProduct}
-                title={"Title"}
-                data={
-                  getProductFilter.length === 0 ? [] : getProductFilter.product
-                }
-              />
-            </Col>
-            <Col flex={1}>
-              <SelectItem
-                disabled={
-                  selectedItemsBrand.length !== 0 ||
-                  selectedItemsProduct.length !== 0
-                    ? true
-                    : false
-                }
+                disabled={selectedItemsBrand !== null ? true : false}
                 value={selectedItemsCategory}
-                onChange={setSelectedItemsCategory}
+                onChange={changeFilterCategory}
                 title={"Category"}
                 data={
                   getProductFilter.length === 0 ? [] : getProductFilter.category
@@ -165,7 +185,13 @@ export default function Product() {
       <Table
         loading={getProductLoading}
         rowKey={(record) => record.id}
-        dataSource={getProductResult === null ? [] : getProductResult.products}
+        dataSource={
+          getProductResult === null
+            ? []
+            : filterTable.length !== 0
+            ? filterTable
+            : getProductResult.products
+        }
         columns={columnTableProduct}
         scroll={{
           x: 800,
