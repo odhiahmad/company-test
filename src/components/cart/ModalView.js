@@ -43,7 +43,7 @@ export default function ModalView({ visible, onCancel, data }) {
   return (
     <Modal
       centered
-      visible={visible}
+      open={visible}
       onCancel={onCancel}
       width={"80%"}
       footer={null}

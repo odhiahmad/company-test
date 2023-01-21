@@ -52,6 +52,7 @@ export default function Product() {
     const data = {
       search: value,
     };
+    setFilterTable([]);
     dispatch(getProduct(data));
   };
 
